@@ -1,186 +1,769 @@
 
-  <div class="about-text">
-    <p>
-      O PORTAL DE SUCESSO é uma plataforma digital moçambicana,
-      criada com o propósito de promover a música nacional,
-      apoiar os artistas e aproximar os músicos do público.
-    </p>
-    <br>
-    <p>
-      Com origem em Nacala-Porto, na província de Nampula,
-      o projeto nasce com uma visão nacional e internacional,
-      oferecendo um espaço de divulgação, audição e download
-      de músicas, respeitando a identidade e o talento de
-      cada artista.
-    </p>
-    <br>
-    <p>
-      Acreditamos que a música moçambicana merece mais
-      oportunidades, reconhecimento e alcance.
-    </p>
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101827">
+  <meta name="description" content="PORTAL DE SUCESSO - A Música que tu gostas. Plataforma musical moçambicana.">
+  <title>PORTAL DE SUCESSO | A Música que tu gostas</title>
+
+  <style>
+    :root {
+      --bg: #101827;
+      --panel: #192638;
+      --panel2: #21334a;
+      --primary: #12b886;
+      --secondary: #0d9470;
+      --white: #ffffff;
+      --muted: #b7c4d4;
+      --border: #34465c;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    header {
+      background: #0b1320;
+      border-bottom: 1px solid var(--border);
+      padding: 17px 5%;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: bold;
+      color: var(--primary);
+    }
+
+    .logo span {
+      color: white;
+    }
+
+    nav {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    nav a:hover {
+      color: var(--primary);
+    }
+
+    .hero {
+      min-height: 430px;
+      padding: 100px 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      background:
+        linear-gradient(135deg, #101827, #193b46, #101827);
+    }
+
+    .hero-content {
+      max-width: 800px;
+    }
+
+    .hero h1 {
+      font-size: clamp(32px, 6vw, 55px);
+      margin-bottom: 15px;
+    }
+
+    .hero h1 span {
+      color: var(--primary);
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 18px;
+      margin-bottom: 25px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 22px;
+      border: none;
+      border-radius: 7px;
+      background: var(--primary);
+      color: #061c16;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 5px;
+    }
+
+    .btn:hover {
+      background: #0da779;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--primary);
+      color: white;
+    }
+
+    section {
+      padding: 65px 5%;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 30px;
+      margin-bottom: 12px;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      color: var(--muted);
+      margin-bottom: 35px;
+    }
+
+    .about-text {
+      max-width: 850px;
+      margin: auto;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-top: 35px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      padding: 25px;
+      border-radius: 12px;
+    }
+
+    .card h3 {
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+
+    .card p {
+      color: var(--muted);
+    }
+
+    .forms-area {
+      background: #0b1320;
+    }
+
+    .forms-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .form-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 25px;
+    }
+
+    .form-card h3 {
+      margin-bottom: 20px;
+      color: var(--primary);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 13px;
+      margin-bottom: 14px;
+      border-radius: 7px;
+      border: 1px solid var(--border);
+      background: #101827;
+      color: white;
+      font-size: 15px;
+    }
+
+    input:focus, select:focus {
+      outline: 1px solid var(--primary);
+    }
+
+    form .btn {
+      width: 100%;
+      margin: 5px 0;
+    }
+
+    .message {
+      margin-top: 12px;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 14px;
+      display: none;
+      overflow-wrap: anywhere;
+    }
+
+    .message.success {
+      display: block;
+      background: #123c30;
+      color: #9ff0cb;
+    }
+
+    .message.error {
+      display: block;
+      background: #492326;
+      color: #ffb8b8;
+    }
+
+    .dashboard {
+      display: none;
+      max-width: 900px;
+      margin: 30px auto 0;
+      padding: 25px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    .dashboard h3 {
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+
+    footer {
+      background: #080e18;
+      padding: 35px 5%;
+      text-align: center;
+      border-top: 1px solid var(--border);
+    }
+
+    footer p {
+      color: var(--muted);
+      margin: 5px;
+    }
+
+    .footer-logo {
+      font-size: 23px;
+      font-weight: bold;
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    @media(max-width: 600px) {
+      header {
+        padding: 14px;
+      }
+
+      .header-content {
+        justify-content: center;
+      }
+
+      nav {
+        justify-content: center;
+        gap: 12px;
+      }
+
+      nav a {
+        font-size: 13px;
+      }
+
+      .hero {
+        min-height: 350px;
+        padding: 65px 15px;
+      }
+
+      section {
+        padding: 45px 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-content">
+    <a href="#" class="logo">PORTAL <span>DE SUCESSO</span></a>
+
+    <nav>
+      <a href="#inicio">Início</a>
+      <a href="#sobre">Sobre</a>
+      <a href="#missao">Missão</a>
+      <a href="#generos">Géneros</a>
+      <a href="#conta">Entrar / Cadastrar</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
   </div>
-</div>
+</header>
+
+<main>
+
+<section class="hero" id="inicio">
+  <div class="hero-content">
+    <h1>PORTAL <span>DE SUCESSO</span></h1>
+    <p>A Música que tu gostas</p>
+
+    <p>
+      A plataforma digital moçambicana dedicada
+      à promoção da música, valorização dos artistas
+      e divulgação de novos talentos.
+    </p>
+
+    <a href="#conta" class="btn">Criar conta de artista</a>
+    <a href="#sobre" class="btn btn-outline">Conhecer a plataforma</a>
+  </div>
 </section>
 
-<section>
-<div class="container">
-  <div class="section-title">
-    <h2>Nossa missão, visão e valores</h2>
+<section id="sobre">
+  <div class="container">
+    <h2 class="section-title">Sobre Nós</h2>
+
+    <div class="about-text">
+      <p>
+        O PORTAL DE SUCESSO é uma plataforma digital moçambicana,
+        criada com o propósito de promover a música nacional,
+        apoiar os artistas e aproximar os músicos do público.
+      </p>
+
+      <br>
+
+      <p>
+        Com origem em Nacala-Porto, na província de Nampula,
+        o projeto nasce com uma visão nacional e internacional,
+        oferecendo um espaço de divulgação, valorização e
+        crescimento da música moçambicana.
+      </p>
+
+      <br>
+
+      <p>
+        A plataforma pretende reunir artistas, produtores,
+        compositores e amantes da música num único espaço digital.
+      </p>
+    </div>
   </div>
-  <div class="grid">
-    <div class="card">
-      <h3>Missão</h3>
-      <p>Promover e divulgar a música moçambicana, criando oportunidades para artistas e aproximando-os do público.</p>
-    </div>
-    <div class="card">
-      <h3>Visão</h3>
-      <p>Ser uma plataforma musical de referência em Moçambique e alcançar reconhecimento internacional.</p>
-    </div>
-    <div class="card">
-      <h3>Valores</h3>
-      <p>Inclusão, transparência, respeito, criatividade, inovação e valorização da cultura moçambicana.</p>
-    </div>
-  </div>
-</div>
 </section>
 
-<section id="conta" class="auth-area">
-<div class="container">
-  <div class="section-title">
-    <h2>Área de <span class="gold">acesso</span></h2>
-    <p>Entre na sua conta ou crie o seu perfil de artista.</p>
-  </div>
+<section id="missao">
+  <div class="container">
+    <h2 class="section-title">Missão, Visão e Valores</h2>
 
-  <div class="auth-box">
-    <div class="tabs">
-      <button class="btn" onclick="showForm('login')">Entrar</button>
-      <button class="btn btn-gold" onclick="showForm('register')">Cadastrar</button>
+    <div class="cards">
+      <div class="card">
+        <h3>Missão</h3>
+        <p>
+          Promover a música moçambicana, apoiar os artistas
+          e facilitar o acesso do público à produção musical nacional.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Visão</h3>
+        <p>
+          Tornar-se uma plataforma de referência na divulgação
+          da música moçambicana, com reconhecimento internacional.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Valores</h3>
+        <p>
+          Valorização cultural, transparência, criatividade,
+          respeito, inovação e compromisso com os artistas.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="generos">
+  <div class="container">
+    <h2 class="section-title">Géneros Musicais</h2>
+    <p class="section-subtitle">
+      Diversidade musical de Moçambique, África e do mundo.
+    </p>
+
+    <div class="cards">
+      <div class="card"><h3>Afro</h3><p>Afrobeats, Afro-pop, Afro-house.</p></div>
+      <div class="card"><h3>Kizomba</h3><p>Kizomba tradicional e moderna.</p></div>
+      <div class="card"><h3>Hip-Hop</h3><p>Rap, Trap e Drill.</p></div>
+      <div class="card"><h3>Dance</h3><p>House, Amapiano e Electronic.</p></div>
+      <div class="card"><h3>R&B</h3><p>R&B, Soul e Neo Soul.</p></div>
+      <div class="card"><h3>Gospel</h3><p>Música religiosa e de adoração.</p></div>
+      <div class="card">
+        <h3>Ritmos Africanos</h3>
+        <p>Marrabenta, Pandza, Xigubo, Tufo, Makwayela, Afrobeat e outros ritmos africanos.</p>
+      </div>
+      <div class="card"><h3>Outros estilos</h3><p>Outras expressões e estilos musicais.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="forms-area" id="conta">
+  <div class="container">
+    <h2 class="section-title">Área de Utilizadores</h2>
+    <p class="section-subtitle">
+      Cria a tua conta ou entra na tua conta existente.
+    </p>
+
+    <div class="forms-grid">
+
+      <div class="form-card">
+        <h3>Cadastro de Artista</h3>
+
+        <form id="registerForm">
+          <input id="artistName" type="text"
+            placeholder="Nome artístico" required>
+
+          <input id="fullName" type="text"
+            placeholder="Nome completo" required>
+
+          <input id="artistEmail" type="email"
+            placeholder="Endereço de email" required>
+
+          <input id="artistPhone" type="tel"
+            placeholder="Número de telefone">
+
+          <select id="artistGenre" required>
+            <option value="">Seleciona o género musical</option>
+            <option>Afro</option>
+            <option>Kizomba</option>
+            <option>Hip-Hop</option>
+            <option>Trap</option>
+            <option>Drill</option>
+            <option>R&B</option>
+            <option>Gospel</option>
+            <option>Marrabenta</option>
+            <option>Pandza</option>
+            <option>Xigubo</option>
+            <option>Tufo</option>
+            <option>Makwayela</option>
+            <option>Outros Ritmos Africanos</option>
+            <option>Outro estilo musical</option>
+          </select>
+
+          <input id="otherGenre" type="text"
+            placeholder="Indica o teu estilo musical"
+            style="display:none">
+
+          <input id="artistPassword" type="password"
+            placeholder="Criar palavra-passe (mínimo 6 caracteres)"
+            minlength="6" required>
+
+          <button type="submit" class="btn" id="registerButton">
+            Criar conta gratuitamente
+          </button>
+        </form>
+
+        <div id="registerMessage" class="message"></div>
+      </div>
+
+      <div class="form-card">
+        <h3>Iniciar Sessão</h3>
+
+        <form id="loginForm">
+          <input id="loginEmail" type="email"
+            placeholder="Endereço de email" required>
+
+          <input id="loginPassword" type="password"
+            placeholder="Palavra-passe" required>
+
+          <button type="submit" class="btn" id="loginButton">
+            Entrar na minha conta
+          </button>
+        </form>
+
+        <div id="loginMessage" class="message"></div>
+      </div>
+
     </div>
 
-    <form id="loginForm">
-      <h2>Entrar na plataforma</h2>
-      <input type="email" id="loginEmail" placeholder="O seu email" required>
-      <input type="password" id="loginPassword" placeholder="A sua senha" required>
-      <button class="btn" type="submit">Entrar</button>
-    </form>
+    <div class="dashboard" id="userDashboard">
+      <h3>Bem-vindo ao PORTAL DE SUCESSO!</h3>
+      <p id="userInfo"></p>
+      <p id="userRole"></p>
+      <button class="btn" id="logoutButton">Terminar sessão</button>
+    </div>
 
-    <form id="registerForm" hidden>
-      <h2>Criar conta de artista</h2>
-      <input type="text" id="fullName" placeholder="Nome completo" required>
-      <input type="text" id="artistName" placeholder="Nome artístico" required>
-      <input type="tel" id="phone" placeholder="Número de telefone">
-      <input type="email" id="registerEmail" placeholder="Email" required>
-      <input type="password" id="registerPassword" placeholder="Criar senha (mínimo 6 caracteres)" minlength="6" required>
-      <button class="btn btn-gold" type="submit">Criar conta</button>
-    </form>
-
-    <p id="message" role="status" aria-live="polite"></p>
   </div>
-</div>
 </section>
 
 </main>
+
 <footer id="contacto">
-  <div class="logo">PORTAL <span>DE SUCESSO</span></div>
-  <p><strong>A Música que tu gostas</strong></p>
-  <p>Sonoridade e Tecnologia</p>
-  <p>De Moçambique para o mundo!</p>
-  <p>Contacto: <a href="mailto:portalnortemoz@gmail.com">portalnortemoz@gmail.com</a></p>
-  <p>© 2026 PORTAL DE SUCESSO. Todos os direitos reservados.</p>
-  <p>Uma plataforma para todos os artistas moçambicanos.</p>
+  <div class="footer-logo">PORTAL DE SUCESSO</div>
+
+  <p>A Música que tu gostas</p>
+
+  <p>Uma plataforma musical moçambicana.</p>
+
+  <p>Origem: Nacala-Porto, Nampula, Moçambique.</p>
+
+  <p>Contacto: portalnortemoz@gmail.com</p>
+
+  <p>&copy; 2026 PORTAL DE SUCESSO. Todos os direitos reservados.</p>
 </footer>
 
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- Configuração existente -->
 <script src="config.js"></script>
-<script type="module">
-import { createClient } from
-'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-const config = window.SUPABASE_CONFIG;
-let supabaseClient = null;
+<script>
+(() => {
+  const config = window.SUPABASE_CONFIG;
 
-const message = document.getElementById('message');
+  if (!config || !config.url || !config.key ||
+      !window.supabase || !window.supabase.createClient) {
+    document.getElementById("loginMessage").textContent =
+      "Erro na configuração do Supabase. Verifica o config.js.";
+    document.getElementById("loginMessage").className =
+      "message error";
+    return;
+  }
 
-if (config && config.url && config.key) {
-  supabaseClient = createClient(config.url, config.key);
-} else {
-  message.textContent =
-  'A ligação à plataforma ainda não está configurada.';
-}
+  const db = window.supabase.createClient(
+    config.url,
+    config.key
+  );
 
-window.showForm = function(type) {
-  document.getElementById('loginForm').hidden = type !== 'login';
-  document.getElementById('registerForm').hidden = type !== 'register';
-  message.textContent = '';
-};
+  const $ = id => document.getElementById(id);
 
-document.getElementById('registerForm')
-.addEventListener('submit', async (event) => {
-  event.preventDefault();
+  function showMessage(id, message, type) {
+    const element = $(id);
+    element.textContent = message;
+    element.className = "message " + type;
+  }
 
-  if (!supabaseClient) return;
+  $("artistGenre").addEventListener("change", function() {
+    const isOther = this.value === "Outro estilo musical";
+    $("otherGenre").style.display = isOther ? "block" : "none";
+    $("otherGenre").required = isOther;
+  });
 
-  message.textContent = 'A criar a sua conta...';
+  $("registerForm").addEventListener("submit", async function(event) {
+    event.preventDefault();
 
-  const fullName = document.getElementById('fullName').value.trim();
-  const artistName = document.getElementById('artistName').value.trim();
-  const phone = document.getElementById('phone').value.trim();
-  const email = document.getElementById('registerEmail').value.trim();
-  const password = document.getElementById('registerPassword').value;
+    const button = $("registerButton");
+    button.disabled = true;
+    button.textContent = "A criar conta...";
 
-  const { data, error } = await supabaseClient.auth.signUp({
-    email,
-    password,
-    options: {
-      data: {
-        full_name: fullName,
-        artist_name: artistName,
-        phone: phone,
-        role: 'artist'
+    try {
+      const artistName = $("artistName").value.trim();
+      const fullName = $("fullName").value.trim();
+      const email = $("artistEmail").value.trim();
+      const phone = $("artistPhone").value.trim();
+      const genre = $("artistGenre").value;
+      const otherGenre = $("otherGenre").value.trim();
+      const password = $("artistPassword").value;
+
+      if (genre === "Outro estilo musical" && !otherGenre) {
+        throw new Error("Indica o teu estilo musical.");
       }
+
+      const { data, error } = await db.auth.signUp({
+        email: email,
+        password: password,
+        options: {
+          data: {
+            full_name: fullName,
+            artist_name: artistName,
+            phone: phone,
+            genre: genre,
+            other_genre: otherGenre
+          }
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.session) {
+        showMessage(
+          "registerMessage",
+          "Conta criada com sucesso! Aguarda a aprovação do administrador.",
+          "success"
+        );
+      } else {
+        showMessage(
+          "registerMessage",
+          "Conta criada! Verifica o teu email para confirmar o cadastro. Depois poderás iniciar sessão.",
+          "success"
+        );
+      }
+
+      $("registerForm").reset();
+      $("otherGenre").style.display = "none";
+
+      if (data.session) {
+        await updateDashboard(data.session.user);
+      }
+
+    } catch (error) {
+      showMessage("registerMessage", error.message, "error");
+    } finally {
+      button.disabled = false;
+      button.textContent = "Criar conta gratuitamente";
     }
   });
 
-  if (error) {
-    message.textContent = 'Erro: ' + error.message;
-    return;
+  $("loginForm").addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    const button = $("loginButton");
+    button.disabled = true;
+    button.textContent = "A entrar...";
+
+    try {
+      const email = $("loginEmail").value.trim();
+      const password = $("loginPassword").value;
+
+      const { data, error } = await db.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) throw error;
+
+      showMessage(
+        "loginMessage",
+        "Sessão iniciada com sucesso!",
+        "success"
+      );
+
+      await updateDashboard(data.user);
+
+    } catch (error) {
+      showMessage("loginMessage", error.message, "error");
+    } finally {
+      button.disabled = false;
+      button.textContent = "Entrar na minha conta";
+    }
+  });
+
+  async function updateDashboard(user) {
+    if (!user) return;
+
+    $("userDashboard").style.display = "block";
+    $("userInfo").textContent =
+      "Conta: " + user.email;
+
+    $("userRole").textContent =
+      "A consultar o perfil da tua conta...";
+
+    const { data: profile, error } = await db
+      .from("profiles")
+      .select("full_name, role, status")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    if (error) {
+      $("userRole").textContent =
+        "Sessão ativa. Não foi possível consultar o perfil.";
+      return;
+    }
+
+    if (!profile) {
+      $("userRole").textContent =
+        "A tua conta está criada, mas o perfil ainda não está disponível.";
+      return;
+    }
+
+    $("userInfo").textContent =
+      "Bem-vindo, " + (profile.full_name || user.email);
+
+    if (profile.role === "admin") {
+      $("userRole").textContent =
+        "Administrador do PORTAL DE SUCESSO.";
+    } else if (profile.status === "approved") {
+      $("userRole").textContent =
+        "Artista aprovado.";
+    } else {
+      $("userRole").textContent =
+        "A tua conta aguarda aprovação do administrador.";
+    }
+
+    $("userDashboard").scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
   }
 
-  message.textContent = data.session
-    ? 'Conta criada com sucesso! Já pode entrar.'
-    : 'Conta criada! Verifique o seu email para confirmar o cadastro.';
-  event.target.reset();
-});
+  $("logoutButton").addEventListener("click", async function() {
+    const { error } = await db.auth.signOut();
 
-document.getElementById('loginForm')
-.addEventListener('submit', async (event) => {
-  event.preventDefault();
+    if (error) {
+      alert(error.message);
+      return;
+    }
 
-  if (!supabaseClient) return;
+    $("userDashboard").style.display = "none";
+    showMessage("loginMessage", "Sessão terminada.", "success");
+  });
 
-  message.textContent = 'A verificar os seus dados...';
+  db.auth.getSession().then(({ data, error }) => {
+    if (error) {
+      console.error(error);
+      return;
+    }
 
-  const email = document.getElementById('loginEmail').value.trim();
-  const password = document.getElementById('loginPassword').value;
+    if (data.session) {
+      updateDashboard(data.session.user);
+    }
+  });
 
-  const { data, error } = await supabaseClient.auth
-    .signInWithPassword({ email, password });
+  db.auth.onAuthStateChange((event, session) => {
+    if (event === "SIGNED_IN" && session) {
+      updateDashboard(session.user);
+    }
 
-  if (error) {
-    message.textContent = 'Não foi possível entrar: ' + error.message;
-    return;
-  }
+    if (event === "SIGNED_OUT") {
+      $("userDashboard").style.display = "none";
+    }
+  });
 
-  message.textContent = 'Autenticação realizada com sucesso!';
-
-  // A administração e os artistas serão encaminhados
-  // para as respetivas áreas após configurarmos os painéis.
-  if (data.user) {
-    setTimeout(() => {
-      window.location.href = 'dashboard.html';
-    }, 1000);
-  }
-});
+})();
 </script>
 
 </body>
-</html>
+                                 </html>
+  
