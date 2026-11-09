@@ -521,9 +521,46 @@
       <h3>Bem-vindo ao PORTAL DE SUCESSO!</h3>
       <p id="userInfo"></p>
       <p id="userRole"></p>
-      <button class="btn" id="logoutButton">Terminar sessão</button>
+
+<!-- PAINEL DO ADMINISTRADOR -->
+<div id="adminPanel" style="display:none; margin-top:25px;">
+
+  <h2 style="color:#12b886;">Painel Administrativo</h2>
+  <p>Gestão da plataforma PORTAL DE SUCESSO.</p>
+
+  <div class="cards">
+
+    <div class="card">
+      <h3>Gestão de Artistas</h3>
+      <p>Consultar e gerir os artistas cadastrados.</p>
+      <button class="btn" id="loadArtistsButton">
+        Ver artistas
+      </button>
     </div>
 
+  </div>
+
+  <div id="artistsList" style="margin-top:25px;">
+  </div>
+
+</div>
+
+<!-- PAINEL DO ARTISTA -->
+<div id="artistPanel" style="display:none; margin-top:25px;">
+
+  <h2 style="color:#12b886;">Painel do Artista</h2>
+
+  <div class="card">
+    <h3>Minha Conta</h3>
+    <p>Bem-vindo à tua área de artista.</p>
+    <p>Aqui poderás gerir os teus lançamentos musicais.</p>
+  </div>
+
+</div>
+
+<button class="btn" id="logoutButton">
+  Terminar sessão
+</button>
   </div>
 </section>
 
