@@ -785,40 +785,6 @@ async function updateDashboard(user) {
     $("userInfo").textContent =
       "Conta: " + user.email;
 
-    $("userRole").textContent =
-      "A consultar o perfil da tua conta...";
-
-    const { data: profile, error } = await db
-      .from("profiles")
-      .select("full_name, role, status")
-      .eq("id", user.id)
-      .maybeSingle();
-
-    if (error) {
-      $("userRole").textContent =
-        "Sessão ativa. Não foi possível consultar o perfil.";
-      return;
-    }
-
-    if (!profile) {
-      $("userRole").textContent =
-        "A tua conta está criada, mas o perfil ainda não está disponível.";
-      return;
-    }
-
-    $("userInfo").textContent =
-      "Bem-vindo, " + (profile.full_name || user.email);
-
-    if (profile.role === "admin") {
-      $("userRole").textContent =
-        "Administrador do PORTAL DE SUCESSO.";
-    } else if (profile.status === "approved") {
-      $("userRole").textContent =
-        "Artista aprovado.";
-    } else {
-      $("userRole").textContent =
-        "A tua conta aguarda aprovação do administrador.";
-    }
 
     $("userDashboard").scrollIntoView({
       behavior: "smooth",
