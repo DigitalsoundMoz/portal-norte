@@ -779,6 +779,146 @@ async function updateDashboard(user) {
   });
 }
 
+// ==========================================
+// GESTÃO DE ARTISTAS - PAINEL ADMINISTRATIVO
+// ==========================================
+
+async function loadArtists() {
+  const button = $("loadArtistsButton");
+  const container = $("artistsList");
+
+  button.disabled = true;
+  button.textContent = "A carregar artistas...";
+  container.textContent = "A consultar os artistas cadastrados...";
+
+  try {
+    const { data: artists, error } = await db
+      .from("profiles")
+      .select(`
+        id,
+        full_name,
+        artist_name,
+        email,
+        phone,
+        genre,
+        other_genre,
+        status
+      `)
+      .eq("role", "artist")
+      .order("full_name", { ascending: true });
+
+    if (error) throw error;
+
+    container.innerHTML = "";
+
+    if (!artists || artists.length === 0) {
+      container.textContent = "Ainda não existem artistas cadastrados.";
+      return;
+    }
+
+    const title = document.createElement("h3");
+    title.textContent = "Artistas cadastrados: " + artists.length;
+    container.appendChild(title);
+
+    artists.forEach(artist => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.style.marginBottom = "15px";
+
+      const name = document.createElement("h3");
+      name.textContent = artist.artist_name || "Sem nome artístico";
+      card.appendChild(name);
+
+      const details = [
+        "Nome completo: " + (artist.full_name || "Não informado"),
+        "Email: " + (artist.email || "Não informado"),
+        "Telefone: " + (artist.phone || "Não informado"),
+        "Género musical: " + (artist.genre || "Não informado"),
+        "Outro estilo: " + (artist.other_genre || "Não indicado"),
+        "Estado: " + (artist.status || "Não definido")
+      ];
+
+      details.forEach(detail => {
+        const p = document.createElement("p");
+        p.textContent = detail;
+        p.style.color = "#b7c4d4";
+        p.style.marginBottom = "5px";
+        card.appendChild(p);
+      });
+
+      if (artist.status === "pending") {
+        const approve = document.createElement("button");
+        approve.className = "btn";
+        approve.textContent = "Aprovar artista";
+
+        approve.addEventListener("click", () => {
+          changeArtistStatus(artist.id, "approved");
+        });
+
+        card.appendChild(approve);
+
+        const reject = document.createElement("button");
+        reject.className = "btn btn-outline";
+        reject.textContent = "Rejeitar artista";
+
+        reject.addEventListener("click", () => {
+          changeArtistStatus(artist.id, "rejected");
+        });
+
+        card.appendChild(reject);
+      }
+
+      container.appendChild(card);
+    });
+
+  } catch (error) {
+    container.textContent =
+      "Erro ao carregar artistas: " + error.message;
+
+  } finally {
+    button.disabled = false;
+    button.textContent = "Ver artistas";
+  }
+}
+
+
+// Alterar estado do artista
+async function changeArtistStatus(artistId, newStatus) {
+
+  const action = newStatus === "approved"
+    ? "aprovar"
+    : "rejeitar";
+
+  if (!confirm("Tens a certeza de que pretendes " + action + " este artista?")) {
+    return;
+  }
+
+  try {
+    const { error } = await db
+      .from("profiles")
+      .update({ status: newStatus })
+      .eq("id", artistId)
+      .eq("role", "artist");
+
+    if (error) throw error;
+
+    alert(
+      newStatus === "approved"
+        ? "Artista aprovado com sucesso!"
+        : "Cadastro do artista rejeitado."
+    );
+
+    await loadArtists();
+
+  } catch (error) {
+    alert("Erro ao atualizar artista: " + error.message);
+  }
+}
+
+
+// Ativar botão Ver artistas
+$("loadArtistsButton").addEventListener("click", loadArtists);
+  
 
 
   $("logoutButton").addEventListener("click", async function() {
