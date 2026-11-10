@@ -779,18 +779,7 @@ async function updateDashboard(user) {
   });
 }
 
-    if (!user) return;
 
-    $("userDashboard").style.display = "block";
-    $("userInfo").textContent =
-      "Conta: " + user.email;
-
-
-    $("userDashboard").scrollIntoView({
-      behavior: "smooth",
-      block: "center"
-    });
-  }
 
   $("logoutButton").addEventListener("click", async function() {
     const { error } = await db.auth.signOut();
