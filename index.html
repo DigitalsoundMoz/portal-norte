@@ -985,6 +985,59 @@ $("loadArtistsButton").addEventListener("click", loadArtists);
     }
   });
 
+$("artistProfileForm").addEventListener("submit", async function(event) {
+  event.preventDefault();
+
+  const button = $("saveArtistProfile");
+  const message = $("artistProfileMessage");
+
+  button.disabled = true;
+  button.textContent = "A guardar...";
+
+  try {
+    const { data: authData, error: authError } =
+      await db.auth.getUser();
+
+    if (authError) throw authError;
+
+    const user = authData.user;
+
+    if (!user) {
+      throw new Error("Sessão não encontrada. Entra novamente.");
+    }
+
+    const fullName = $("artistFullName").value.trim();
+    const artistName = $("artistStageName").value.trim();
+
+    if (!fullName || !artistName) {
+      throw new Error("Preenche os dois campos.");
+    }
+
+    const { error } = await db
+      .from("profiles")
+      .update({
+        full_name: fullName,
+        artist_name: artistName
+      })
+      .eq("id", user.id);
+
+    if (error) throw error;
+
+    message.textContent = "Dados atualizados com sucesso!";
+    message.style.color = "#12b886";
+
+    await updateDashboard(user);
+
+  } catch (error) {
+    message.textContent = "Erro: " + error.message;
+    message.style.color = "#ff6b6b";
+
+  } finally {
+    button.disabled = false;
+    button.textContent = "Guardar alterações";
+  }
+});
+  
 })();
 </script>
 
