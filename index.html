@@ -885,6 +885,8 @@ async function loadArtists() {
 // Alterar estado do artista
 async function changeArtistStatus(artistId, newStatus) {
 
+async function changeArtistStatus(artistId, newStatus) {
+
   const action = newStatus === "approved"
     ? "aprovar"
     : "rejeitar";
@@ -894,11 +896,10 @@ async function changeArtistStatus(artistId, newStatus) {
   }
 
   try {
-    const { error } = await db
-      .from("profiles")
-      .update({ status: newStatus })
-      .eq("id", artistId)
-      .eq("role", "artist");
+    const { error } = await db.rpc("admin_set_artist_status", {
+      p_artist_id: artistId,
+      p_status: newStatus
+    });
 
     if (error) throw error;
 
@@ -914,6 +915,7 @@ async function changeArtistStatus(artistId, newStatus) {
     alert("Erro ao atualizar artista: " + error.message);
   }
 }
+
 
 
 // Ativar botão Ver artistas
