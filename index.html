@@ -782,6 +782,10 @@ async function updateDashboard(user) {
     $("adminPanel").style.display = "block";
 
   } else if (profile.role === "artist") {
+    
+$("artistFullName").value = profile.full_name || "";
+$("artistStageName").value = profile.artist_name || "";
+             
     $("artistPanel").style.display = "block";
 
     if (profile.status === "approved") {
