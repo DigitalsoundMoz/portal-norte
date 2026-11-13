@@ -545,6 +545,7 @@
 
 </div>
 
+
 <!-- PAINEL DO ARTISTA -->
 <div id="artistPanel" style="display:none; margin-top:25px;">
 
@@ -553,10 +554,35 @@
   <div class="card">
     <h3>Minha Conta</h3>
     <p>Bem-vindo à tua área de artista.</p>
-    <p>Aqui poderás gerir os teus lançamentos musicais.</p>
+    <p>Atualiza os teus dados artísticos.</p>
+
+    <form id="artistProfileForm">
+
+      <label>Nome completo</label>
+      <input
+        type="text"
+        id="artistFullName"
+        required
+      >
+
+      <label>Nome artístico</label>
+      <input
+        type="text"
+        id="artistStageName"
+        required
+      >
+
+      <button type="submit" class="btn" id="saveArtistProfile">
+        Guardar alterações
+      </button>
+
+      <p id="artistProfileMessage"></p>
+
+    </form>
   </div>
 
 </div>
+
 
 <button class="btn" id="logoutButton">
   Terminar sessão
