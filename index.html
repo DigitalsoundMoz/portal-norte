@@ -748,7 +748,7 @@
 async function updateDashboard(user) {
   if (!user) return;
 
-  $("userDashboard").style.display = "block";
+  $("userDashboard").style.display = "none";
   $("adminPanel").style.display = "none";
   $("artistPanel").style.display = "none";
 
@@ -772,6 +772,52 @@ async function updateDashboard(user) {
       "Perfil ainda não disponível.";
     return;
   }
+$("userDashboard").style.display = "block";
+
+$("userInfo").textContent =
+  "Bem-vindo, " + (profile.full_name || user.email);
+
+if (profile.role === "admin") {
+
+  $("userRole").textContent =
+    "Administrador do PORTAL DE SUCESSO.";
+
+  $("adminPanel").style.display = "block";
+
+} else if (profile.role === "artist") {
+
+  $("artistFullName").value = profile.full_name || "";
+  $("artistStageName").value = profile.artist_name || "";
+
+  $("artistPanel").style.display = "block";
+
+  if (profile.status === "approved") {
+
+    $("userRole").textContent = "Artista aprovado.";
+
+  } else if (profile.status === "rejected") {
+
+    $("userRole").textContent =
+      "O teu cadastro foi rejeitado. Contacta o administrador.";
+
+  } else {
+
+    $("userRole").textContent =
+      "O teu cadastro aguarda aprovação.";
+
+  }
+
+} else {
+
+  $("userRole").textContent =
+    "Conta de utilizador.";
+
+}
+
+$("userDashboard").scrollIntoView({
+  behavior: "smooth",
+  block: "center"
+});
 
   $("userInfo").textContent =
     "Bem-vindo, " + (profile.full_name || user.email);
