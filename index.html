@@ -660,6 +660,9 @@
       const genre = $("artistGenre").value;
       const otherGenre = $("otherGenre").value.trim();
       const password = $("artistPassword").value;
+      <button type="submit" class="btn" id="registerButton">
+  Criar conta gratuitamente
+</button>
 
       if (genre === "Outro estilo musical" && !otherGenre) {
         throw new Error("Indica o teu estilo musical.");
