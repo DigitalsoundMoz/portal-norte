@@ -533,7 +533,8 @@
   </div>  
 </section>  </main>  <footer id="contacto">  
   <div class="footer-logo">PORTAL DE SUCESSO</div>    <p>A Música que tu gostas</p>    <p>Uma plataforma musical moçambicana.</p>    <p>Origem: Nacala-Porto, Nampula, Moçambique.</p>    <p>Contacto: portalnortemoz@gmail.com</p>    <p>&copy; 2026 PORTAL DE SUCESSO. Todos os direitos reservados.</p>  
-</footer>  <!-- Supabase -->  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>  <!-- Configuração existente -->  <script src="config.js"></script>  <script>  
+</footer>  <!-- Supabase -->  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>  <!-- Configuração existente -->  <script src="config.js"></script> 
+    <script>  
 (() => {  
   const config = window.SUPABASE_CONFIG;  
   
@@ -813,76 +814,904 @@ $("loadArtistsButton").addEventListener("click", loadArtists);
     if (error) {  
       console.error(error);  
       return;  
-    }  
-  
-    if (data.session) {  
-      updateDashboard(data.session.user);  
-    }  
-  });  
-  
-  db.auth.onAuthStateChange((event, session) => {  
-    if (event === "SIGNED_IN" && session) {  
-      updateDashboard(session.user);  
-    }  
-  
-    if (event === "SIGNED_OUT") {  
-      $("userDashboard").style.display = "none";  
-    }  
-  });  
-  
-$("artistProfileForm").addEventListener("submit", async function(event) {  
-  event.preventDefault();  
-  
-  const button = $("saveArtistProfile");  
-  const message = $("artistProfileMessage");  
-  
-  button.disabled = true;  
-  button.textContent = "A guardar...";  
-  
-  try {  
-    const { data: authData, error: authError } =  
-      await db.auth.getUser();  
-  
-    if (authError) throw authError;  
-  
-    const user = authData.user;  
-  
-    if (!user) {  
-      throw new Error("Sessão não encontrada. Entra novamente.");  
-    }  
-  
-    const fullName = $("artistFullName").value.trim();  
-    const artistName = $("artistStageName").value.trim();  
-  
-    if (!fullName || !artistName) {  
-      throw new Error("Preenche os dois campos.");  
-    }  
-  
-    const { error } = await db  
-      .from("profiles")  
-      .update({  
-        full_name: fullName,  
-        artist_name: artistName  
-      })  
-      .eq("id", user.id);  
-  
-    if (error) throw error;  
-  
-    message.textContent = "Dados atualizados com sucesso!";  
-    message.style.color = "#12b886";  
-  
-    await updateDashboard(user);  
-  
-  } catch (error) {  
-    message.textContent = "Erro: " + error.message;  
-    message.style.color = "#ff6b6b";  
-  
-  } finally {  
-    button.disabled = false;  
-    button.textContent = "Guardar alterações";  
-  }  
-});  
-    
-})();  
-</script>  </body>  
+<script>
+(() => {
+  "use strict";
+
+  // =========================================
+  // 1. CONFIGURAÇÃO E CONEXÃO
+  // =========================================
+
+  const config = window.SUPABASE_CONFIG;
+
+  const $ = id => document.getElementById(id);
+
+  if (
+    !config ||
+    !config.url ||
+    !config.key ||
+    !window.supabase
+  ) {
+    const message = $("loginMessage");
+
+    if (message) {
+      message.textContent =
+        "Erro de configuração. Verifica o ficheiro config.js.";
+      message.className = "message error";
+    }
+
+    return;
+  }
+
+  const db = window.supabase.createClient(
+    config.url,
+    config.key
+  );
+
+  let currentUser = null;
+  let dashboardLoading = false;
+
+  // =========================================
+  // 2. MENSAGENS
+  // =========================================
+
+  function showMessage(id, text, type = "error") {
+    const element = $(id);
+
+    if (!element) return;
+
+    element.textContent = text;
+    element.className = "message " + type;
+  }
+
+  function clearMessage(id) {
+    const element = $(id);
+
+    if (!element) return;
+
+    element.textContent = "";
+    element.className = "message";
+  }
+
+  // =========================================
+  // 3. GÉNEROS MUSICAIS
+  // =========================================
+
+  $("artistGenre").addEventListener("change", function() {
+    const isOther =
+      this.value === "Outro estilo musical";
+
+    $("otherGenre").style.display =
+      isOther ? "block" : "none";
+
+    $("otherGenre").required = isOther;
+  });
+
+  // =========================================
+  // 4. CADASTRO DE ARTISTAS
+  // =========================================
+
+  $("registerForm").addEventListener(
+    "submit",
+    async function(event) {
+
+      event.preventDefault();
+
+      const button = $("registerButton");
+
+      if (!button) {
+        showMessage(
+          "registerMessage",
+          "Botão de cadastro não encontrado.",
+          "error"
+        );
+        return;
+      }
+
+      button.disabled = true;
+      button.textContent = "A criar conta...";
+
+      clearMessage("registerMessage");
+
+      try {
+
+        const artistName =
+          $("artistName").value.trim();
+
+        const fullName =
+          $("fullName").value.trim();
+
+        const email =
+          $("artistEmail").value.trim();
+
+        const phone =
+          $("artistPhone").value.trim();
+
+        const genre =
+          $("artistGenre").value;
+
+        const otherGenre =
+          $("otherGenre").value.trim();
+
+        const password =
+          $("artistPassword").value;
+
+        if (!artistName || !fullName || !email || !password) {
+          throw new Error(
+            "Preenche todos os campos obrigatórios."
+          );
+        }
+
+        if (password.length < 6) {
+          throw new Error(
+            "A palavra-passe deve ter pelo menos 6 caracteres."
+          );
+        }
+
+        if (
+          genre === "Outro estilo musical" &&
+          !otherGenre
+        ) {
+          throw new Error(
+            "Indica o teu estilo musical."
+          );
+        }
+
+        // Criar conta no Supabase Auth
+
+        const { data, error } =
+          await db.auth.signUp({
+            email: email,
+            password: password,
+
+            options: {
+              data: {
+                full_name: fullName,
+                artist_name: artistName,
+                phone: phone,
+                genre: genre,
+                other_genre: otherGenre
+              }
+            }
+          });
+
+        if (error) throw error;
+
+        if (data.session && data.user) {
+
+          showMessage(
+            "registerMessage",
+            "Conta criada! O teu cadastro aguarda aprovação do administrador.",
+            "success"
+          );
+
+          await updateDashboard(data.user);
+
+        } else {
+
+          showMessage(
+            "registerMessage",
+            "Cadastro criado! Se a confirmação de email estiver ativada, confirma o teu email antes de iniciar sessão.",
+            "success"
+          );
+        }
+
+        $("registerForm").reset();
+
+        $("otherGenre").style.display = "none";
+        $("otherGenre").required = false;
+
+      } catch (error) {
+
+        showMessage(
+          "registerMessage",
+          error.message || "Erro ao criar conta.",
+          "error"
+        );
+
+      } finally {
+
+        button.disabled = false;
+        button.textContent =
+          "Criar conta gratuitamente";
+
+      }
+    }
+  );
+
+  // =========================================
+  // 5. INICIAR SESSÃO
+  // =========================================
+
+  $("loginForm").addEventListener(
+    "submit",
+    async function(event) {
+
+      event.preventDefault();
+
+      const button = $("loginButton");
+
+      button.disabled = true;
+      button.textContent = "A entrar...";
+
+      clearMessage("loginMessage");
+
+      try {
+
+        const email =
+          $("loginEmail").value.trim();
+
+        const password =
+          $("loginPassword").value;
+
+        const { data, error } =
+          await db.auth.signInWithPassword({
+            email: email,
+            password: password
+          });
+
+        if (error) throw error;
+
+        showMessage(
+          "loginMessage",
+          "Sessão iniciada com sucesso!",
+          "success"
+        );
+
+        await updateDashboard(data.user);
+
+      } catch (error) {
+
+        showMessage(
+          "loginMessage",
+          error.message || "Não foi possível iniciar sessão.",
+          "error"
+        );
+
+      } finally {
+
+        button.disabled = false;
+        button.textContent =
+          "Entrar na minha conta";
+
+      }
+    }
+  );
+
+  // =========================================
+  // 6. RECUPERAR PALAVRA-PASSE
+  // =========================================
+
+  $("forgotPasswordButton")
+    .addEventListener("click", async function() {
+
+      const email =
+        $("artistEmail").value.trim() ||
+        $("loginEmail").value.trim();
+
+      const message =
+        $("forgotPasswordMessage");
+
+      if (!email) {
+
+        message.textContent =
+          "Introduz primeiro o teu email no cadastro ou no login.";
+
+        message.style.color = "#ffb8b8";
+
+        return;
+      }
+
+      this.disabled = true;
+      this.textContent = "A enviar...";
+
+      try {
+
+        const { error } =
+          await db.auth.resetPasswordForEmail(
+            email,
+            {
+              redirectTo: window.location.href
+            }
+          );
+
+        if (error) throw error;
+
+        message.textContent =
+          "Pedido enviado. Se o email existir, receberás instruções para recuperar a senha.";
+
+        message.style.color = "#9ff0cb";
+
+      } catch (error) {
+
+        message.textContent =
+          "Erro: " + error.message;
+
+        message.style.color = "#ffb8b8";
+
+      } finally {
+
+        this.disabled = false;
+        this.textContent =
+          "Esqueci a minha senha";
+
+      }
+    });
+
+  // =========================================
+  // 7. PAINEL DE UTILIZADOR
+  // =========================================
+
+  async function updateDashboard(user) {
+
+    if (!user) return;
+
+    currentUser = user;
+
+    $("userDashboard").style.display = "block";
+    $("adminPanel").style.display = "none";
+    $("artistPanel").style.display = "none";
+
+    $("userInfo").textContent =
+      "Conta: " + user.email;
+
+    $("userRole").textContent =
+      "A carregar o perfil...";
+
+    try {
+
+      const { data: profile, error } =
+        await db
+          .from("profiles")
+          .select(
+            "id, full_name, artist_name, email, role, status"
+          )
+          .eq("id", user.id)
+          .maybeSingle();
+
+      if (error) throw error;
+
+      if (!profile) {
+
+        $("userRole").textContent =
+          "O perfil ainda não foi criado. Contacta o administrador se o problema persistir.";
+
+        return;
+      }
+
+      $("userInfo").textContent =
+        "Bem-vindo, " +
+        (profile.full_name || user.email);
+
+      // ADMINISTRADOR
+
+      if (profile.role === "admin") {
+
+        $("userRole").textContent =
+          "Administrador do PORTAL DE SUCESSO.";
+
+        $("adminPanel").style.display = "block";
+
+      }
+
+      // ARTISTA
+
+      else if (profile.role === "artist") {
+
+        $("artistFullName").value =
+          profile.full_name || "";
+
+        $("artistStageName").value =
+          profile.artist_name || "";
+
+        $("artistPanel").style.display = "block";
+
+        if (profile.status === "approved") {
+
+          $("userRole").textContent =
+            "Artista aprovado. Podes utilizar a tua área de artista.";
+
+        } else if (profile.status === "rejected") {
+
+          $("userRole").textContent =
+            "O teu cadastro foi rejeitado. Contacta o administrador.";
+
+        } else {
+
+          $("userRole").textContent =
+            "O teu cadastro aguarda aprovação do administrador.";
+
+        }
+
+      }
+
+      // OUTROS UTILIZADORES
+
+      else {
+
+        $("userRole").textContent =
+          "Conta de utilizador.";
+
+      }
+
+      $("userDashboard").scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+
+    } catch (error) {
+
+      $("userRole").textContent =
+        "Erro ao carregar perfil: " + error.message;
+
+    }
+  }
+
+  // =========================================
+  // 8. GESTÃO DE ARTISTAS
+  // =========================================
+
+  async function loadArtists() {
+
+    const button =
+      $("loadArtistsButton");
+
+    const container =
+      $("artistsList");
+
+    button.disabled = true;
+    button.textContent =
+      "A carregar artistas...";
+
+    container.textContent =
+      "A consultar artistas cadastrados...";
+
+    try {
+
+      const { data: artists, error } =
+        await db
+          .from("profiles")
+          .select(
+            "id, full_name, artist_name, email, role, status"
+          )
+          .eq("role", "artist")
+          .order("full_name", {
+            ascending: true
+          });
+
+      if (error) throw error;
+
+      container.innerHTML = "";
+
+      if (!artists || artists.length === 0) {
+
+        container.textContent =
+          "Ainda não existem artistas cadastrados.";
+
+        return;
+      }
+
+      const title =
+        document.createElement("h3");
+
+      title.textContent =
+        "Artistas cadastrados: " +
+        artists.length;
+
+      title.style.color = "#12b886";
+
+      container.appendChild(title);
+
+      artists.forEach(function(artist) {
+
+        const card =
+          document.createElement("div");
+
+        card.className = "card";
+        card.style.marginBottom = "15px";
+
+        const name =
+          document.createElement("h3");
+
+        name.textContent =
+          artist.artist_name ||
+          artist.full_name ||
+          "Artista sem nome";
+
+        const fullName =
+          document.createElement("p");
+
+        fullName.textContent =
+          "Nome completo: " +
+          (artist.full_name || "Não informado");
+
+        const email =
+          document.createElement("p");
+
+        email.textContent =
+          "Email: " +
+          (artist.email || "Não informado");
+
+        const status =
+          document.createElement("p");
+
+        status.textContent =
+          "Estado: " +
+          (artist.status || "pending");
+
+        status.style.marginTop = "8px";
+
+        card.appendChild(name);
+        card.appendChild(fullName);
+        card.appendChild(email);
+        card.appendChild(status);
+
+        // Botões de aprovação
+
+        if (
+          artist.status !== "approved" &&
+          artist.status !== "rejected"
+        ) {
+
+          const approveButton =
+            document.createElement("button");
+
+          approveButton.className = "btn";
+
+          approveButton.textContent =
+            "Aprovar artista";
+
+          approveButton.addEventListener(
+            "click",
+            function() {
+              changeArtistStatus(
+                artist.id,
+                "approved"
+              );
+            }
+          );
+
+          const rejectButton =
+            document.createElement("button");
+
+          rejectButton.className =
+            "btn btn-outline";
+
+          rejectButton.textContent =
+            "Rejeitar cadastro";
+
+          rejectButton.addEventListener(
+            "click",
+            function() {
+              changeArtistStatus(
+                artist.id,
+                "rejected"
+              );
+            }
+          );
+
+          card.appendChild(approveButton);
+          card.appendChild(rejectButton);
+
+        }
+
+        // Permitir reativar artistas rejeitados
+
+        if (artist.status === "rejected") {
+
+          const approveButton =
+            document.createElement("button");
+
+          approveButton.className = "btn";
+
+          approveButton.textContent =
+            "Aprovar artista";
+
+          approveButton.addEventListener(
+            "click",
+            function() {
+              changeArtistStatus(
+                artist.id,
+                "approved"
+              );
+            }
+          );
+
+          card.appendChild(approveButton);
+
+        }
+
+        container.appendChild(card);
+
+      });
+
+    } catch (error) {
+
+      container.textContent =
+        "Erro ao carregar artistas: " +
+        error.message;
+
+    } finally {
+
+      button.disabled = false;
+      button.textContent =
+        "Ver artistas";
+
+    }
+  }
+
+  // =========================================
+  // 9. APROVAR OU REJEITAR ARTISTAS
+  // =========================================
+
+  async function changeArtistStatus(
+    artistId,
+    newStatus
+  ) {
+
+    const action =
+      newStatus === "approved"
+        ? "aprovar"
+        : "rejeitar";
+
+    const confirmation =
+      confirm(
+        "Tens a certeza de que pretendes " +
+        action +
+        " este artista?"
+      );
+
+    if (!confirmation) return;
+
+    try {
+
+      const { error } =
+        await db.rpc(
+          "admin_set_artist_status",
+          {
+            p_artist_id: artistId,
+            p_status: newStatus
+          }
+        );
+
+      if (error) throw error;
+
+      alert(
+        "Estado do artista atualizado com sucesso!"
+      );
+
+      await loadArtists();
+
+    } catch (error) {
+
+      alert(
+        "Erro ao atualizar artista: " +
+        error.message
+      );
+
+    }
+  }
+
+  $("loadArtistsButton")
+    .addEventListener(
+      "click",
+      loadArtists
+    );
+
+  // =========================================
+  // 10. ATUALIZAR PERFIL DO ARTISTA
+  // =========================================
+
+  $("artistProfileForm")
+    .addEventListener(
+      "submit",
+      async function(event) {
+
+        event.preventDefault();
+
+        const button =
+          $("saveArtistProfile");
+
+        const message =
+          $("artistProfileMessage");
+
+        button.disabled = true;
+        button.textContent =
+          "A guardar...";
+
+        try {
+
+          const { data: authData, error: authError } =
+            await db.auth.getUser();
+
+          if (authError) throw authError;
+
+          const user =
+            authData.user;
+
+          if (!user) {
+
+            throw new Error(
+              "Sessão não encontrada. Inicia sessão novamente."
+            );
+
+          }
+
+          const fullName =
+            $("artistFullName").value.trim();
+
+          const artistName =
+            $("artistStageName").value.trim();
+
+          if (!fullName || !artistName) {
+
+            throw new Error(
+              "Preenche o nome completo e o nome artístico."
+            );
+
+          }
+
+          const { error } =
+            await db
+              .from("profiles")
+              .update({
+                full_name: fullName,
+                artist_name: artistName
+              })
+              .eq("id", user.id);
+
+          if (error) throw error;
+
+          message.textContent =
+            "Dados atualizados com sucesso!";
+
+          message.style.color =
+            "#12b886";
+
+          await updateDashboard(user);
+
+        } catch (error) {
+
+          message.textContent =
+            "Erro: " + error.message;
+
+          message.style.color =
+            "#ff6b6b";
+
+        } finally {
+
+          button.disabled = false;
+          button.textContent =
+            "Guardar alterações";
+
+        }
+      }
+    );
+
+  // =========================================
+  // 11. TERMINAR SESSÃO
+  // =========================================
+
+  $("logoutButton")
+    .addEventListener(
+      "click",
+      async function() {
+
+        this.disabled = true;
+        this.textContent =
+          "A terminar sessão...";
+
+        try {
+
+          const { error } =
+            await db.auth.signOut();
+
+          if (error) throw error;
+
+          currentUser = null;
+
+          $("userDashboard").style.display =
+            "none";
+
+          $("adminPanel").style.display =
+            "none";
+
+          $("artistPanel").style.display =
+            "none";
+
+          showMessage(
+            "loginMessage",
+            "Sessão terminada com sucesso.",
+            "success"
+          );
+
+        } catch (error) {
+
+          alert(
+            "Erro ao terminar sessão: " +
+            error.message
+          );
+
+        } finally {
+
+          this.disabled = false;
+          this.textContent =
+            "Terminar sessão";
+
+        }
+      }
+    );
+
+  // =========================================
+  // 12. RECUPERAR SESSÃO EXISTENTE
+  // =========================================
+
+  db.auth.getSession()
+    .then(function(result) {
+
+      const { data, error } = result;
+
+      if (error) {
+
+        console.error(
+          "Erro ao recuperar sessão:",
+          error.message
+        );
+
+        return;
+      }
+
+      if (data.session) {
+
+        updateDashboard(
+          data.session.user
+        );
+
+      }
+
+    });
+
+  // =========================================
+  // 13. MONITORIZAR ALTERAÇÕES DE SESSÃO
+  // =========================================
+
+  db.auth.onAuthStateChange(
+    function(event, session) {
+
+      if (event === "SIGNED_IN" && session) {
+
+        if (
+          currentUser &&
+          currentUser.id === session.user.id
+        ) {
+          return;
+        }
+
+        updateDashboard(
+          session.user
+        );
+
+      }
+
+      if (event === "SIGNED_OUT") {
+
+        currentUser = null;
+
+        $("userDashboard").style.display =
+          "none";
+
+        $("adminPanel").style.display =
+          "none";
+
+        $("artistPanel").style.display =
+          "none";
+
+      }
+
+    }
+  );
+
+})();
+</script>
+  </body>  
                                  </html>  
