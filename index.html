@@ -456,34 +456,72 @@
       <input id="otherGenre" type="text"  
         placeholder="Indica o teu estilo musical"  
         style="display:none">  
+<input
+  id="artistPassword"
+  type="password"
+  placeholder="Criar palavra-passe (mínimo 6 caracteres)"
+  minlength="6"
+  required
+>
 
-      <input id="artistPassword" type="password"  
-        <button type="submit" class="btn" id="registerButton">
+<button
+  type="submit"
+  class="btn"
+  id="registerButton"
+>
   Criar conta gratuitamente
+</button>
+
+</form>
+
+<div id="registerMessage" class="message"></div>
+</div>
+
+<div class="form-card">
+
+  <h3>Iniciar Sessão</h3>
+
+  <form id="loginForm">
+
+    <input
+      id="loginEmail"
+      type="email"
+      placeholder="Endereço de email"
+      required
+    >
+
+    <input
+      id="loginPassword"
+      type="password"
+      placeholder="Palavra-passe"
+      required
+    >
+
+    <button
+      type="submit"
+      class="btn"
+      id="loginButton"
+    >
+      Entrar na minha conta
     </button>
-        placeholder="Criar palavra-passe (mínimo 6 caracteres)"  
-        minlength="6" required>
 
-<button type="button" id="forgotPasswordButton" class="btn btn-outline">  
-  Esqueci a minha senha  
-</button>  <p id="forgotPasswordMessage"></p>  
-        </form>  <div id="registerMessage" class="message"></div>  
-  </div>  
+    <button
+      type="button"
+      id="forgotPasswordButton"
+      class="btn btn-outline"
+    >
+      Esqueci a minha senha
+    </button>
 
-  <div class="form-card">  
-    <h3>Iniciar Sessão</h3>  
+    <p id="forgotPasswordMessage"></p>
 
-    <form id="loginForm">  
-      <input id="loginEmail" type="email"  
-        placeholder="Endereço de email" required>  
+    <div id="loginMessage" class="message"></div>
 
-      <input id="loginPassword" type="password"  
-        placeholder="Palavra-passe" required>  
+  </form>
 
-    <div id="loginMessage" class="message"></div>  
-  </div>  
+</div>
 
-</div>  
+</div>
 
 <div class="dashboard" id="userDashboard">  
   <h3>Bem-vindo ao PORTAL DE SUCESSO!</h3>  
